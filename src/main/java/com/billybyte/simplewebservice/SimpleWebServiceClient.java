@@ -1,11 +1,14 @@
 package com.billybyte.simplewebservice;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+//import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
+//import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import com.thoughtworks.xstream.XStream;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
@@ -87,9 +90,11 @@ public class SimpleWebServiceClient<K,T> {
 				throw new IllegalArgumentException(this.getClass().getName()
 						+ " getData key is null");
 			}
-			ByteOutputStream bs = new ByteOutputStream();
+//			ByteOutputStream bs = new ByteOutputStream();
+			ByteArrayOutputStream bs = new ByteArrayOutputStream();
 			xstream.toXML(key, bs);
-			byte[] argToSend = bs.getBytes();
+//			byte[] argToSend = bs.getBytes();
+			byte[] argToSend = bs.toByteArray();
 			if (argToSend == null) {
 				throw new IllegalArgumentException(this.getClass().getName()
 						+ " getData key can't be made into a byte[] arrray: "
@@ -123,8 +128,9 @@ public class SimpleWebServiceClient<K,T> {
 			}
 			if (SimpleServiceImpl.isNullData(returnedData))
 				return null;
-			ByteInputStream bIn = new ByteInputStream(returnedData,
-					returnedData.length);
+//			ByteInputStream bIn = new ByteInputStream(returnedData,
+//					returnedData.length);
+			ByteArrayInputStream bIn = new ByteArrayInputStream(returnedData, 0, returnedData.length);
 			Object o = xstream.fromXML(bIn);
 			t = (T) o;
 		}
@@ -156,9 +162,17 @@ public class SimpleWebServiceClient<K,T> {
 				throw new IllegalArgumentException(this.getClass().getName()
 						+ " getData key is null");
 			}
-			ByteOutputStream bs = new ByteOutputStream();
-			bs.writeAsAscii(xml);
-			byte[] argToSend = bs.getBytes();
+//			ByteOutputStream bs = new ByteOutputStream();
+//			bs.writeAsAscii(xml);
+//			byte[] argToSend = bs.getBytes();
+			ByteArrayOutputStream bs = new ByteArrayOutputStream();
+			byte buf[] = xml.getBytes(); 
+			try {
+				bs.write(buf);
+			} catch (IOException e1) {
+				throw new IllegalStateException(e1);
+			}
+			byte[] argToSend = bs.toByteArray();
 			if (argToSend == null) {
 				throw new IllegalArgumentException(this.getClass().getName()
 						+ " getData key can't be made into a byte[] arrray: "
