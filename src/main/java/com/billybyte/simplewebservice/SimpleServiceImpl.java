@@ -1,12 +1,12 @@
 package com.billybyte.simplewebservice;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.lang.management.ManagementFactory;
 
 
 import javax.jws.WebService;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import com.thoughtworks.xstream.XStream;
 
 @WebService(endpointInterface="com.billybyte.simplewebservice.SimpleService")   
@@ -34,7 +34,8 @@ public class SimpleServiceImpl<K,T> implements SimpleService {
 		
 		try {
 			if(isNullData(xml))return returnNull();
-			ByteInputStream bIn = new ByteInputStream(xml, xml.length);
+//			ByteInputStream bIn = new ByteInputStream(xml, xml.length);
+			ByteArrayInputStream bIn = new ByteArrayInputStream(xml,0,xml.length);
 			K requestKey = (K) getXstream().fromXML(bIn);
 //			System.out.println("debug 2");
 			try {
@@ -42,12 +43,14 @@ public class SimpleServiceImpl<K,T> implements SimpleService {
 			} catch (Exception e) {
 				System.out.println(this.getClass()+ " " + e.getMessage());
 			}
-			ByteOutputStream bOut = new ByteOutputStream();
+//			ByteOutputStream bOut = new ByteOutputStream();
+			ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 			if(ret==null){
 				return returnNull();
 			}
 			getXstream().toXML(ret, bOut);
-			retBytes = bOut.getBytes();
+//			retBytes = bOut.getBytes();
+			retBytes = bOut.toByteArray();
 			return retBytes;
 		} catch (Exception e) {
 			// DO NOTHING
