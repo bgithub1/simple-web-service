@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.billybyte</groupId>
   <artifactId>simple-web-service</artifactId>
-  <version>1.01</version>
+  <version>1.0</version>
 	<packaging>jar</packaging>
 	<build>
 	  <plugins>
